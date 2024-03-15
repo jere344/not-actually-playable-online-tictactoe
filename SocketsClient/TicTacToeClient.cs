@@ -6,11 +6,31 @@ namespace SocketsClient;
 
 public class TicTacToeClient
 {
-    public IPAddress serverIP = IPAddress.Parse("127.0.0.1");
-    public int Port = 12345;
+    public IPAddress serverIP;
+    public int Port;
 
     public TicTacToeClient()
     {
+        Console.WriteLine("Enter server IP: ");
+        string input = Console.ReadLine() ?? "";
+        IPAddress? _serverIP = IPAddress.TryParse(input, out _serverIP) ? _serverIP : null;
+        while (_serverIP == null)
+        {
+            Console.WriteLine("Invalid IP. Try again: ");
+            input = Console.ReadLine() ?? "";
+            _serverIP = IPAddress.TryParse(input, out _serverIP) ? _serverIP : null;
+        }
+        serverIP = _serverIP;
+
+        Console.WriteLine("Enter server port: ");
+        input = Console.ReadLine() ?? "";
+        Port = int.Parse(input);
+        while (Port < 1024 || Port > 65535)
+        {
+            Console.WriteLine("Invalid port. Try again: ");
+            input = Console.ReadLine() ?? "";
+            Port = int.Parse(input);
+        }
     }
 
     public void Start()
@@ -19,7 +39,14 @@ public class TicTacToeClient
         var ep = new IPEndPoint(serverIP, Port);
 
         Console.WriteLine("Connecting to server...");
-        clientSocket.Connect(ep);
+        try {
+            clientSocket.Connect(ep);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Erreur de connection : " + e.Message);
+            return;
+        }
         Console.WriteLine("Connected to server");
 
         // Game loop
