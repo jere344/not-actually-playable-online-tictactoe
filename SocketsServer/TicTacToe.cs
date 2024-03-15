@@ -52,7 +52,6 @@ public class TicTacToe
 
     public char CheckWinner()
     {
-        return 'X';
         // Check rows
         for (int i = 0; i < 9; i += 3)
         {

@@ -7,12 +7,32 @@ namespace SocketsServer;
 
 public class TicTacToeServer
 {
-    public int Port = 12345;
-    public IPAddress HostIP = IPAddress.Parse("127.0.0.1");
+    public int Port;
+    public IPAddress HostIP;
     public TicTacToe game = new();
     public Socket? listenSocket;
     public TicTacToeServer()
     {
+        Console.WriteLine("Enter host IP: ");
+        string input = Console.ReadLine() ?? "";
+        IPAddress? _serverIP = IPAddress.TryParse(input, out _serverIP) ? _serverIP : null;
+        while (_serverIP == null)
+        {
+            Console.WriteLine("Invalid IP. Try again: ");
+            input = Console.ReadLine() ?? "";
+            _serverIP = IPAddress.TryParse(input, out _serverIP) ? _serverIP : null;
+        }
+        HostIP = _serverIP;
+
+        Console.WriteLine("Enter server port: ");
+        input = Console.ReadLine() ?? "";
+        Port = int.Parse(input);
+        while (Port < 1024 || Port > 65535)
+        {
+            Console.WriteLine("Invalid port. Try again: ");
+            input = Console.ReadLine() ?? "";
+            Port = int.Parse(input);
+        }
     }
 
     public void Start()
@@ -20,7 +40,14 @@ public class TicTacToeServer
         listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         var ep = new IPEndPoint(HostIP, Port);
 
-        listenSocket.Bind(ep);
+        try {
+            listenSocket.Bind(ep);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error: " + e.Message);
+            return;
+        }
 
         Console.WriteLine("Listening for client...");
         listenSocket.Listen(1); // only 1 client for this game
@@ -117,7 +144,9 @@ public class TicTacToeServer
         if (response[0] != 'y')
         {
             SendStop(clientSocket, "Game over");
+            Console.WriteLine("Client does not want to play again. Closing connection...");
             clientSocket.Close();
+            Console.WriteLine("Connection closed");
             return;
         }
 
