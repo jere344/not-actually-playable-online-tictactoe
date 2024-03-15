@@ -13,6 +13,7 @@ public class TicTacToeServer
     public Socket? listenSocket;
     public TicTacToeServer()
     {
+        Console.WriteLine("------ Server ------");
         Console.WriteLine("Enter host IP: ");
         string input = Console.ReadLine() ?? "";
         IPAddress? _serverIP = IPAddress.TryParse(input, out _serverIP) ? _serverIP : null;

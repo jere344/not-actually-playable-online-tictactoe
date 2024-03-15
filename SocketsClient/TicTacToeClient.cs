@@ -11,6 +11,7 @@ public class TicTacToeClient
 
     public TicTacToeClient()
     {
+        Console.WriteLine("------ Client ------");
         Console.WriteLine("Enter server IP: ");
         string input = Console.ReadLine() ?? "";
         IPAddress? _serverIP = IPAddress.TryParse(input, out _serverIP) ? _serverIP : null;
