@@ -1,3 +1,5 @@
 Just a class exam, show basics of how to use sockets.  
-  
-Start server project then client in a different window. For online you'll need to edit port and serverIP in both server and client.
+
+It is actually playable, just ugly and barebone console app
+
+Start server project then client. Chose server and client port at startup.
